@@ -11,6 +11,15 @@ const app = express();
 app.use(cors()); // Para permitir solicitudes desde otros dominios
 app.use(bodyParser.json()); // Parsear JSON en el cuerpo de las solicitudes
 
+// Middleware para validar si el email es válido
+app.use((req, res, next) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (req.body.email && !emailRegex.test(req.body.email)) {
+    return res.status(400).json({ error: 'El email proporcionado no es válido.' });
+  }
+  next();
+});
+
 // Ruta principal para el servicio de envío de correos
 app.use('/api/emails', emailRoutes);
 
